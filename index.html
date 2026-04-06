@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Bistro | affordable Dining</title>
+    <title>The Bistro | Multi-Branch Menu</title>
     <style>
         :root {
             --primary: #1e272e; 
@@ -45,14 +45,14 @@
 
         /* QR Scanner Animation */
         .qr-wrapper {
-            margin: 30px auto;
-            padding: 20px;
+            margin: 20px auto;
+            padding: 15px;
             border: 3px dashed var(--accent);
             border-radius: 20px;
             background: #fff;
             position: relative;
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
         }
 
         .scanner-line {
@@ -69,88 +69,42 @@
 
         @keyframes scanAnim {
             0% { top: 10px; }
-            50% { top: 190px; }
+            50% { top: 170px; }
             100% { top: 10px; }
         }
 
-        /* Location Cards */
+        /* Branch Selection */
+        .branch-list { overflow-y: auto; flex: 1; margin-bottom: 10px; }
         .location-card {
             background: var(--light-gray);
             border: 2px solid transparent;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            transition: 0.2s;
         }
-        .location-card.selected { border-color: var(--accent); background: #fff; }
+        .location-card.selected { border-color: var(--accent); background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        /* Tabs */
-        .tabs {
-            display: flex;
-            background: var(--light-gray);
-            padding: 5px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-        .tab-btn {
-            flex: 1;
-            border: none;
-            background: none;
-            padding: 10px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            cursor: pointer;
-            border-radius: 8px;
-            color: #95a5a6;
-        }
+        /* Tabs & Items */
+        .tabs { display: flex; background: var(--light-gray); padding: 5px; border-radius: 12px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; border: none; background: none; padding: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 8px; color: #95a5a6; }
         .tab-btn.active { background: var(--primary); color: var(--accent); }
 
-        /* Menu Items */
         .menu-scroll { flex: 1; overflow-y: auto; }
-        .menu-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #f1f1f1;
-        }
-        .item-title { font-weight: 600; font-size: 15px; display: block; }
-        .item-price { color: var(--accent); font-weight: 700; font-size: 13px; }
+        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f1f1; }
+        .item-title { font-weight: 600; font-size: 14px; display: block; }
+        .item-price { color: var(--accent); font-weight: 700; font-size: 12px; }
 
-        .qty-box {
-            display: flex;
-            align-items: center;
-            background: var(--light-gray);
-            border-radius: 8px;
-            padding: 3px;
-            gap: 10px;
-        }
-        .qty-btn { width: 28px; height: 28px; border: none; background: white; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .qty-box { display: flex; align-items: center; background: var(--light-gray); border-radius: 8px; padding: 3px; gap: 8px; }
+        .qty-btn { width: 26px; height: 26px; border: none; background: white; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-        /* Footer Bar */
-        .footer-bar {
-            background: var(--primary);
-            padding: 20px;
-            margin: 0 -25px -25px -25px;
-            color: white;
-        }
-        .btn-action {
-            background: var(--accent);
-            color: var(--primary);
-            border: none;
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .receipt { background: white; padding: 20px; border: 1px solid #ddd; font-family: 'Courier New', monospace; font-size: 13px; color: #000; margin-top: 10px;}
+        .footer-bar { background: var(--primary); padding: 20px; margin: 0 -25px -25px -25px; color: white; }
+        .btn-action { background: var(--accent); color: var(--primary); border: none; width: 100%; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 15px; cursor: pointer; }
+        .receipt { background: white; padding: 15px; border: 1px solid #ddd; font-family: 'Courier New', monospace; font-size: 12px; color: #000; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -158,27 +112,45 @@
 <div class="phone-container">
     
     <div id="page-scan" class="screen">
-        <h2 style="margin-top: 20px;">The Bistro</h2>
-        <p style="color: #7f8c8d; text-align: center; font-size: 14px;">Scan table QR to start</p>
+        <h2 style="margin-top: 10px;">The Bistro</h2>
+        <p style="color: #7f8c8d; text-align: center; font-size: 13px;">Welcome! Please scan to begin.</p>
         
         <div class="qr-wrapper">
             <div class="scanner-line"></div>
-            <img src="qrcode.png" alt="QR Code" style="width: 100%; height: 100%; object-fit: cover;">
+            <img src="qrcode.png" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
         
-        <button class="btn-action" style="margin-top: auto;" onclick="navigate('page-location')">Continue</button>
+        <button class="btn-action" style="margin-top: auto;" onclick="navigate('page-location')">Check In</button>
     </div>
 
     <div id="page-location" class="screen hidden">
-        <h2>Verify Location</h2>
-        <div class="location-card" onclick="selectLoc(this, 'Main Branch')">
-            <span style="font-size: 24px;">📍</span>
-            <div><strong>Main Branch</strong><small style="display:block; color:#95a5a6">Dine-in Area</small></div>
+        <h2 style="font-size: 20px;">Select Branch</h2>
+        <p style="color: #7f8c8d; font-size: 12px; margin-bottom: 15px;">Where are you dining today?</p>
+
+        <div class="branch-list">
+            <div class="location-card" onclick="selectLoc(this, 'BGC High Street')">
+                <span>🏙️</span><div><strong>BGC High Street</strong><small style="display:block; color:#95a5a6">Taguig City</small></div>
+            </div>
+            <div class="location-card" onclick="selectLoc(this, 'Greenbelt 5')">
+                <span>🏢</span><div><strong>Greenbelt 5</strong><small style="display:block; color:#95a5a6">Makati City</small></div>
+            </div>
+            <div class="location-card" onclick="selectLoc(this, 'SM North EDSA')">
+                <span>🛍️</span><div><strong>SM North EDSA</strong><small style="display:block; color:#95a5a6">Quezon City</small></div>
+            </div>
+            <div class="location-card" onclick="selectLoc(this, 'IT Park Cebu')">
+                <span>🌴</span><div><strong>IT Park</strong><small style="display:block; color:#95a5a6">Cebu City</small></div>
+            </div>
         </div>
-        <button id="btn-to-menu" class="btn-action" style="margin-top: auto; opacity: 0.5;" disabled onclick="navigate('page-menu')">Yes, I am here</button>
+
+        <button id="btn-to-menu" class="btn-action" style="opacity: 0.5;" disabled onclick="navigate('page-menu')">Enter Restaurant</button>
     </div>
 
     <div id="page-menu" class="screen hidden">
+        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+            <span id="loc-display" style="font-size: 11px; color: var(--accent); font-weight: bold;">BRANCH</span>
+            <span style="font-size: 11px; color: #95a5a6;">Table #08</span>
+        </div>
+
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('app')">Starters</button>
             <button class="tab-btn" onclick="switchTab('main')">Meals</button>
@@ -194,6 +166,10 @@
                 <div><span class="item-title">Cheesy Fries</span><span class="item-price">₱65</span></div>
                 <div class="qty-box"><button class="qty-btn" onclick="updateQty('Fries', 65, -1)">-</button><span id="qty-Fries">0</span><button class="qty-btn" onclick="updateQty('Fries', 65, 1)">+</button></div>
             </div>
+            <div class="menu-item">
+                <div><span class="item-title">Garlic Bread</span><span class="item-price">₱45</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Bread', 45, -1)">-</button><span id="qty-Bread">0</span><button class="qty-btn" onclick="updateQty('Bread', 45, 1)">+</button></div>
+            </div>
         </div>
 
         <div id="tab-main" class="menu-scroll hidden">
@@ -206,8 +182,8 @@
                 <div class="qty-box"><button class="qty-btn" onclick="updateQty('Spag', 65, -1)">-</button><span id="qty-Spag">0</span><button class="qty-btn" onclick="updateQty('Spag', 65, 1)">+</button></div>
             </div>
             <div class="menu-item">
-                <div><span class="item-title">Pork Chop Rice</span><span class="item-price">₱120</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Pork', 120, -1)">-</button><span id="qty-Pork">0</span><button class="qty-btn" onclick="updateQty('Pork', 120, 1)">+</button></div>
+                <div><span class="item-title">Adobo Rice Bowl</span><span class="item-price">₱95</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Adobo', 95, -1)">-</button><span id="qty-Adobo">0</span><button class="qty-btn" onclick="updateQty('Adobo', 95, 1)">+</button></div>
             </div>
         </div>
 
@@ -217,29 +193,35 @@
                 <div class="qty-box"><button class="qty-btn" onclick="updateQty('Coke', 75, -1)">-</button><span id="qty-Coke">0</span><button class="qty-btn" onclick="updateQty('Coke', 75, 1)">+</button></div>
             </div>
             <div class="menu-item">
-                <div><span class="item-title">Iced Tea</span><span class="item-price">₱25</span></div>
+                <div><span class="item-title">Iced Tea Glass</span><span class="item-price">₱25</span></div>
                 <div class="qty-box"><button class="qty-btn" onclick="updateQty('Tea', 25, -1)">-</button><span id="qty-Tea">0</span><button class="qty-btn" onclick="updateQty('Tea', 25, 1)">+</button></div>
+            </div>
+            <div class="menu-item">
+                <div><span class="item-title">Buko Juice</span><span class="item-price">₱50</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Buko', 50, -1)">-</button><span id="qty-Buko">0</span><button class="qty-btn" onclick="updateQty('Buko', 50, 1)">+</button></div>
             </div>
         </div>
 
         <div class="footer-bar">
             <div style="display:flex; justify-content:space-between; margin-bottom: 10px;"><span>Total</span><strong>₱<span id="total-val">0</span></strong></div>
-            <button class="btn-action" onclick="placeOrder()">Place Order</button>
+            <button class="btn-action" onclick="placeOrder()">Send Order</button>
         </div>
     </div>
 
     <div id="page-receipt" class="screen hidden">
-        <h2 style="text-align: center;">Order Confirmed!</h2>
+        <h2 style="text-align: center; margin-top: 20px;">Order Success!</h2>
+        <p style="text-align: center; font-size: 12px; color: #7f8c8d;">Please wait for your server.</p>
         <div class="receipt" id="receipt-data"></div>
-        <button class="btn-action" style="margin-top: 20px;" onclick="location.reload()">New Order</button>
+        <button class="btn-action" style="margin-top: auto;" onclick="location.reload()">Start New Order</button>
     </div>
 
 </div>
 
 <script>
     let cart = {};
-    let prices = { Lumpia: 99, Fries: 65, Steak: 85, Spag: 65, Pork: 120, Coke: 75, Tea: 25 };
-    let names = { Lumpia: "Shanghai", Fries: "Cheesy Fries", Steak: "Burger Steak", Spag: "Spaghetti", Pork: "Pork Chop Rice", Coke: "Coke 1.5L", Tea: "Iced Tea" };
+    let prices = { Lumpia: 99, Fries: 65, Bread: 45, Steak: 85, Spag: 65, Adobo: 95, Coke: 75, Tea: 25, Buko: 50 };
+    let names = { Lumpia: "Shanghai", Fries: "Cheesy Fries", Bread: "Garlic Bread", Steak: "Burger Steak", Spag: "Spaghetti", Adobo: "Adobo Bowl", Coke: "Coke 1.5L", Tea: "Iced Tea", Buko: "Buko Juice" };
+    let selectedBranch = "";
 
     function navigate(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
@@ -249,6 +231,8 @@
     function selectLoc(el, name) {
         document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
         el.classList.add('selected');
+        selectedBranch = name;
+        document.getElementById('loc-display').innerText = name.toUpperCase();
         document.getElementById('btn-to-menu').disabled = false;
         document.getElementById('btn-to-menu').style.opacity = "1";
     }
@@ -273,13 +257,15 @@
     function placeOrder() {
         let total = 0;
         for(let k in cart) total += cart[k] * prices[k];
-        if(total === 0) return alert("Select items!");
+        if(total === 0) return alert("Please select items first!");
 
-        let html = `<strong>THE BISTRO RECEIPT</strong><hr style="border-top:1px dashed #000">`;
+        let html = `<center><strong>THE BISTRO</strong><br>${selectedBranch}</center><hr style="border-top:1px dashed #000">`;
         for(let k in cart) {
             if(cart[k] > 0) html += `<div style="display:flex; justify-content:space-between"><span>${cart[k]}x ${names[k]}</span><span>₱${cart[k]*prices[k]}</span></div>`;
         }
         html += `<hr style="border-top:1px dashed #000"><div style="display:flex; justify-content:space-between; font-weight:bold"><span>TOTAL</span><span>₱${total}</span></div>`;
+        html += `<br><center>TABLE #08<br>${new Date().toLocaleTimeString()}</center>`;
+        
         document.getElementById('receipt-data').innerHTML = html;
         navigate('page-receipt');
     }
