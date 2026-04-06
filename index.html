@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Bistro | Premium QR Menu</title>
+    <title>The Bistro | affordable Dining</title>
     <style>
         :root {
             --primary: #1e272e; 
@@ -15,7 +15,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: #dfe6e9;
             margin: 0;
             display: flex;
@@ -24,7 +24,6 @@
             height: 100vh;
         }
 
-        /* Container that looks like a phone on Desktop, full screen on Mobile */
         .phone-container {
             width: 100%;
             max-width: 400px;
@@ -35,20 +34,16 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
         }
 
         @media (min-width: 500px) {
-            .phone-container {
-                border-radius: 40px;
-                border: 12px solid #1a1a1a;
-            }
+            .phone-container { border-radius: 40px; border: 12px solid #1a1a1a; box-shadow: 0 30px 60px rgba(0,0,0,0.3); }
         }
 
         .screen { padding: 25px; flex: 1; display: flex; flex-direction: column; box-sizing: border-box; overflow: hidden; }
         .hidden { display: none; }
 
-        /* --- 1. QR SCANNER ANIMATION --- */
+        /* QR Scanner Animation */
         .qr-wrapper {
             margin: 30px auto;
             padding: 20px;
@@ -56,11 +51,8 @@
             border-radius: 20px;
             background: #fff;
             position: relative;
-            width: 220px;
-            height: 220px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 200px;
+            height: 200px;
         }
 
         .scanner-line {
@@ -77,29 +69,11 @@
 
         @keyframes scanAnim {
             0% { top: 10px; }
-            50% { top: 210px; }
+            50% { top: 190px; }
             100% { top: 10px; }
         }
 
-        /* --- BRANDING --- */
-        .logo-box {
-            width: 60px;
-            height: 60px;
-            background: var(--primary);
-            color: var(--accent);
-            font-size: 28px;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
-            border-radius: 12px;
-        }
-
-        h2 { font-size: 24px; margin: 10px 0; color: var(--primary); text-align: center; }
-        .subtitle { color: #7f8c8d; font-size: 14px; text-align: center; margin-bottom: 20px; }
-
-        /* --- LOCATION CARDS --- */
+        /* Location Cards */
         .location-card {
             background: var(--light-gray);
             border: 2px solid transparent;
@@ -113,7 +87,7 @@
         }
         .location-card.selected { border-color: var(--accent); background: #fff; }
 
-        /* --- TABS --- */
+        /* Tabs */
         .tabs {
             display: flex;
             background: var(--light-gray);
@@ -135,7 +109,7 @@
         }
         .tab-btn.active { background: var(--primary); color: var(--accent); }
 
-        /* --- MENU ITEMS --- */
+        /* Menu Items */
         .menu-scroll { flex: 1; overflow-y: auto; }
         .menu-item {
             display: flex;
@@ -155,9 +129,9 @@
             padding: 3px;
             gap: 10px;
         }
-        .qty-btn { width: 28px; height: 28px; border: none; background: white; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .qty-btn { width: 28px; height: 28px; border: none; background: white; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-        /* --- FOOTER --- */
+        /* Footer Bar */
         .footer-bar {
             background: var(--primary);
             padding: 20px;
@@ -184,105 +158,88 @@
 <div class="phone-container">
     
     <div id="page-scan" class="screen">
-        <div class="logo-box">B</div>
-        <h2>The Bistro</h2>
-        <p class="subtitle">Position the QR code within the frame</p>
+        <h2 style="margin-top: 20px;">The Bistro</h2>
+        <p style="color: #7f8c8d; text-align: center; font-size: 14px;">Scan table QR to start</p>
         
         <div class="qr-wrapper">
             <div class="scanner-line"></div>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TheBistroMenu" alt="QR Code">
+            <img src="qrcode.png" alt="QR Code" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         
-        <p style="text-align: center; font-size: 12px; color: #95a5a6; margin-top: 20px;">
-            Connecting to table sensor...
-        </p>
-        <button class="btn-action" style="margin-top: auto;" onclick="navigate('page-location')">Continue to Location</button>
+        <button class="btn-action" style="margin-top: auto;" onclick="navigate('page-location')">Continue</button>
     </div>
 
     <div id="page-location" class="screen hidden">
-        <h2>Confirm Location</h2>
-        <p class="subtitle">Please verify your dining branch</p>
-
-        <div class="location-card" onclick="selectLoc(this, 'BGC High Street')">
-            <span style="font-size: 24px;">🏙️</span>
-            <div><strong>BGC High Street</strong><small style="display:block; color:#95a5a6">Taguig, Metro Manila</small></div>
+        <h2>Verify Location</h2>
+        <div class="location-card" onclick="selectLoc(this, 'Main Branch')">
+            <span style="font-size: 24px;">📍</span>
+            <div><strong>Main Branch</strong><small style="display:block; color:#95a5a6">Dine-in Area</small></div>
         </div>
-
-        <div class="location-card" onclick="selectLoc(this, 'Greenbelt 5')">
-            <span style="font-size: 24px;">🏢</span>
-            <div><strong>Greenbelt 5</strong><small style="display:block; color:#95a5a6">Makati City</small></div>
-        </div>
-
-        <button id="btn-to-menu" class="btn-action" style="margin-top: auto; opacity: 0.5;" disabled onclick="navigate('page-menu')">Confirm & View Menu</button>
+        <button id="btn-to-menu" class="btn-action" style="margin-top: auto; opacity: 0.5;" disabled onclick="navigate('page-menu')">Yes, I am here</button>
     </div>
 
     <div id="page-menu" class="screen hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span id="loc-display" style="font-size: 12px; font-weight: 800; color: var(--accent);">BGC</span>
-            <span style="font-size: 12px; color: #95a5a6;">Table #14</span>
-        </div>
-
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('app')">Starters</button>
-            <button class="tab-btn" onclick="switchTab('main')">Main</button>
+            <button class="tab-btn" onclick="switchTab('main')">Meals</button>
             <button class="tab-btn" onclick="switchTab('drink')">Drinks</button>
         </div>
 
         <div id="tab-app" class="menu-scroll">
             <div class="menu-item">
-                <div><span class="item-title">Lumpiang Shanghai</span><span class="item-price">₱180</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Lumpia', 180, -1)">-</button><span id="qty-Lumpia">0</span><button class="qty-btn" onclick="updateQty('Lumpia', 180, 1)">+</button></div>
+                <div><span class="item-title">Shanghai (6pcs)</span><span class="item-price">₱99</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Lumpia', 99, -1)">-</button><span id="qty-Lumpia">0</span><button class="qty-btn" onclick="updateQty('Lumpia', 99, 1)">+</button></div>
             </div>
             <div class="menu-item">
-                <div><span class="item-title">Sizzling Gambas</span><span class="item-price">₱320</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Gambas', 320, -1)">-</button><span id="qty-Gambas">0</span><button class="qty-btn" onclick="updateQty('Gambas', 320, 1)">+</button></div>
+                <div><span class="item-title">Cheesy Fries</span><span class="item-price">₱65</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Fries', 65, -1)">-</button><span id="qty-Fries">0</span><button class="qty-btn" onclick="updateQty('Fries', 65, 1)">+</button></div>
             </div>
         </div>
 
         <div id="tab-main" class="menu-scroll hidden">
             <div class="menu-item">
-                <div><span class="item-title">Beef Caldereta</span><span class="item-price">₱420</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Caldereta', 420, -1)">-</button><span id="qty-Caldereta">0</span><button class="qty-btn" onclick="updateQty('Caldereta', 420, 1)">+</button></div>
+                <div><span class="item-title">Burger Steak</span><span class="item-price">₱85</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Steak', 85, -1)">-</button><span id="qty-Steak">0</span><button class="qty-btn" onclick="updateQty('Steak', 85, 1)">+</button></div>
             </div>
             <div class="menu-item">
-                <div><span class="item-title">Crispy Pata</span><span class="item-price">₱780</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Pata', 780, -1)">-</button><span id="qty-Pata">0</span><button class="qty-btn" onclick="updateQty('Pata', 780, 1)">+</button></div>
+                <div><span class="item-title">Spaghetti</span><span class="item-price">₱65</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Spag', 65, -1)">-</button><span id="qty-Spag">0</span><button class="qty-btn" onclick="updateQty('Spag', 65, 1)">+</button></div>
+            </div>
+            <div class="menu-item">
+                <div><span class="item-title">Pork Chop Rice</span><span class="item-price">₱120</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Pork', 120, -1)">-</button><span id="qty-Pork">0</span><button class="qty-btn" onclick="updateQty('Pork', 120, 1)">+</button></div>
             </div>
         </div>
 
         <div id="tab-drink" class="menu-scroll hidden">
             <div class="menu-item">
-                <div><span class="item-title">Mango Shake</span><span class="item-price">₱140</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Mango', 140, -1)">-</button><span id="qty-Mango">0</span><button class="qty-btn" onclick="updateQty('Mango', 140, 1)">+</button></div>
+                <div><span class="item-title">Coke 1.5L</span><span class="item-price">₱75</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Coke', 75, -1)">-</button><span id="qty-Coke">0</span><button class="qty-btn" onclick="updateQty('Coke', 75, 1)">+</button></div>
+            </div>
+            <div class="menu-item">
+                <div><span class="item-title">Iced Tea</span><span class="item-price">₱25</span></div>
+                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Tea', 25, -1)">-</button><span id="qty-Tea">0</span><button class="qty-btn" onclick="updateQty('Tea', 25, 1)">+</button></div>
             </div>
         </div>
 
         <div class="footer-bar">
-            <div style="display:flex; justify-content:space-between; margin-bottom: 15px;">
-                <span>Current Total</span>
-                <strong>₱<span id="total-val">0</span></strong>
-            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom: 10px;"><span>Total</span><strong>₱<span id="total-val">0</span></strong></div>
             <button class="btn-action" onclick="placeOrder()">Place Order</button>
         </div>
     </div>
 
     <div id="page-receipt" class="screen hidden">
-        <div style="text-align: center; margin-top: 20px;">
-            <div style="font-size: 50px; color: var(--success);">✔</div>
-            <h2>Order Sent!</h2>
-            <p class="subtitle">Kitchen is preparing your meal.</p>
-        </div>
+        <h2 style="text-align: center;">Order Confirmed!</h2>
         <div class="receipt" id="receipt-data"></div>
-        <button class="btn-action" style="background: var(--primary); color: white; margin-top: auto;" onclick="location.reload()">Start New Order</button>
+        <button class="btn-action" style="margin-top: 20px;" onclick="location.reload()">New Order</button>
     </div>
 
 </div>
 
 <script>
     let cart = {};
-    let prices = { Lumpia: 180, Gambas: 320, Caldereta: 420, Pata: 780, Mango: 140 };
-    let names = { Lumpia: "Lumpiang Shanghai", Gambas: "Sizzling Gambas", Caldereta: "Beef Caldereta", Pata: "Crispy Pata", Mango: "Mango Shake" };
-    let currentLoc = "";
+    let prices = { Lumpia: 99, Fries: 65, Steak: 85, Spag: 65, Pork: 120, Coke: 75, Tea: 25 };
+    let names = { Lumpia: "Shanghai", Fries: "Cheesy Fries", Steak: "Burger Steak", Spag: "Spaghetti", Pork: "Pork Chop Rice", Coke: "Coke 1.5L", Tea: "Iced Tea" };
 
     function navigate(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
@@ -292,8 +249,6 @@
     function selectLoc(el, name) {
         document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
         el.classList.add('selected');
-        currentLoc = name;
-        document.getElementById('loc-display').innerText = name;
         document.getElementById('btn-to-menu').disabled = false;
         document.getElementById('btn-to-menu').style.opacity = "1";
     }
@@ -310,7 +265,6 @@
         cart[id] += delta;
         if(cart[id] < 0) cart[id] = 0;
         document.getElementById('qty-' + id).innerText = cart[id];
-        
         let total = 0;
         for(let k in cart) total += cart[k] * prices[k];
         document.getElementById('total-val').innerText = total;
@@ -319,15 +273,13 @@
     function placeOrder() {
         let total = 0;
         for(let k in cart) total += cart[k] * prices[k];
-        if(total === 0) return alert("Please select at least one item!");
+        if(total === 0) return alert("Select items!");
 
-        let html = `<strong>THE BISTRO - ${currentLoc.toUpperCase()}</strong><hr style="border:none; border-top:1px dashed #000">`;
+        let html = `<strong>THE BISTRO RECEIPT</strong><hr style="border-top:1px dashed #000">`;
         for(let k in cart) {
             if(cart[k] > 0) html += `<div style="display:flex; justify-content:space-between"><span>${cart[k]}x ${names[k]}</span><span>₱${cart[k]*prices[k]}</span></div>`;
         }
-        html += `<hr style="border:none; border-top:1px dashed #000"><div style="display:flex; justify-content:space-between; font-weight:bold"><span>TOTAL</span><span>₱${total}</span></div>`;
-        html += `<br><center>ORDER #BST-${Math.floor(1000+Math.random()*9000)}<br>${new Date().toLocaleTimeString()}</center>`;
-        
+        html += `<hr style="border-top:1px dashed #000"><div style="display:flex; justify-content:space-between; font-weight:bold"><span>TOTAL</span><span>₱${total}</span></div>`;
         document.getElementById('receipt-data').innerHTML = html;
         navigate('page-receipt');
     }
