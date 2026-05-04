@@ -3,273 +3,390 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Bistro | Multi-Branch Menu</title>
+    <title>The Bistro | Elite Dining OS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1e272e; 
-            --accent: #d4a373;  
-            --success: #27ae60;
-            --danger: #e74c3c;
-            --bg-white: #ffffff;
-            --light-gray: #f8f9fa;
+            --primary: #0f172a; --accent: #c5a059; --bg: #f8fafc;
+            --surface: #ffffff; --text: #1e293b; --muted: #64748b;
+            --success: #10b981; --border: #e2e8f0;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #dfe6e9;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #cbd5e1; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+
+        .phone-frame { 
+            width: 100%; max-width: 414px; height: 100%; max-height: 896px; 
+            background: var(--bg); position: relative; display: flex; flex-direction: column; overflow: hidden;
         }
+        @media (min-width: 500px) { .phone-frame { border-radius: 50px; border: 12px solid var(--primary); box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5); } }
 
-        .phone-container {
-            width: 100%;
-            max-width: 400px;
-            height: 100%;
-            max-height: 800px;
-            background: var(--bg-white);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+        .screen { flex: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; animation: fadeIn 0.4s ease; }
+        .hidden { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        /* --- SCREEN 1: QR --- */
+        .qr-screen { padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: center; height: 100%; }
+        .qr-viewport {
+            background: white; padding: 30px; border-radius: 40px; margin: 30px auto; 
+            border: 1px solid var(--border); position: relative; width: fit-content;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05); overflow: hidden;
         }
-
-        @media (min-width: 500px) {
-            .phone-container { border-radius: 40px; border: 12px solid #1a1a1a; box-shadow: 0 30px 60px rgba(0,0,0,0.3); }
+        .scan-line { 
+            position: absolute; left: 0; width: 100%; height: 3px; 
+            background: var(--accent); box-shadow: 0 0 15px var(--accent);
+            z-index: 10; animation: scanning 2.5s infinite ease-in-out;
         }
+        @keyframes scanning { 0% { top: 5%; } 50% { top: 95%; } 100% { top: 5%; } }
 
-        .screen { padding: 25px; flex: 1; display: flex; flex-direction: column; box-sizing: border-box; overflow: hidden; }
-        .hidden { display: none; }
+        /* --- SCREEN 2: JIGSAW CAPTCHA --- */
+        .puzzle-screen { background: var(--primary); height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; color: white; text-align: center; }
+        .puzzle-box { width: 300px; height: 170px; border-radius: 12px; position: relative; overflow: hidden; background-size: cover; border: 2px solid #334155; }
+        .puzzle-slot { position: absolute; width: 60px; height: 60px; background: rgba(0,0,0,0.75); border-radius: 10px; border: 2px dashed rgba(255,255,255,0.4); }
+        .puzzle-piece { position: absolute; width: 60px; height: 60px; border-radius: 10px; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.6); cursor: grab; background-size: 300px 170px; z-index: 5; }
+        .slider-track { width: 300px; height: 48px; background: #1e293b; border-radius: 24px; margin-top: 35px; position: relative; border: 1px solid #334155; }
+        .slider-btn { position: absolute; left: 0; width: 70px; height: 48px; background: var(--accent); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary); cursor: pointer; }
 
-        /* QR Scanner Animation */
-        .qr-wrapper {
-            margin: 20px auto;
-            padding: 15px;
-            border: 3px dashed var(--accent);
-            border-radius: 20px;
-            background: #fff;
-            position: relative;
-            width: 180px;
-            height: 180px;
+        /* --- SCREEN 3: MENU --- */
+        header { background: white; padding: 20px 25px; border-bottom: 1px solid var(--border); z-index: 100; position: relative; }
+        .loc-tag { font-size: 10px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .tab-tag { font-weight: 800; font-size: 22px; color: var(--primary); }
+
+        .dd-wrapper { position: relative; margin-top: 15px; }
+        .dd-trigger {
+            width: 100%; padding: 12px 18px; background: #f1f5f9; 
+            border: 1px solid var(--border); border-radius: 12px; font-weight: 700; 
+            display: flex; justify-content: space-between; cursor: pointer; font-size: 14px;
         }
-
-        .scanner-line {
-            width: 100%;
-            height: 3px;
-            background: var(--danger);
-            position: absolute;
-            left: 0;
-            top: 0;
-            box-shadow: 0 0 10px var(--danger);
-            animation: scanAnim 2.5s infinite ease-in-out;
-            z-index: 10;
+        .dd-menu {
+            position: absolute; top: 110%; left: 0; width: 100%; background: white;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid var(--border); display: none; z-index: 200; overflow: hidden;
         }
+        .dd-menu.active { display: block; }
+        .dd-item { padding: 12px 18px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; border-bottom: 1px solid var(--bg); }
+        .dd-item:hover { background: var(--bg); color: var(--accent); }
 
-        @keyframes scanAnim {
-            0% { top: 10px; }
-            50% { top: 170px; }
-            100% { top: 10px; }
+        .menu-flow { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 340px; }
+        .item-card { 
+            display: flex; align-items: center; gap: 15px; background: white; 
+            padding: 12px; border-radius: 18px; margin-bottom: 10px;
+            border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
+        .item-img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
+        .item-details { flex: 1; min-width: 0; }
+        .item-name { font-weight: 700; font-size: 14px; color: var(--primary); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .item-price { font-weight: 800; color: var(--accent); font-size: 13px; }
+        
+        .qty-ctrl { display: flex; align-items: center; background: #f1f5f9; padding: 4px; border-radius: 10px; border: 1px solid var(--border); gap: 10px; }
+        .q-btn { width: 24px; height: 24px; border: none; background: white; border-radius: 6px; font-weight: 900; cursor: pointer; color: var(--primary); font-size: 14px; }
 
-        /* Branch Selection */
-        .branch-list { overflow-y: auto; flex: 1; margin-bottom: 10px; }
-        .location-card {
-            background: var(--light-gray);
-            border: 2px solid transparent;
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: 0.2s;
+        footer { 
+            position: absolute; bottom: 0; width: 100%; background: var(--primary); 
+            padding: 20px 25px 30px; border-radius: 30px 30px 0 0; color: white;
         }
-        .location-card.selected { border-color: var(--accent); background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .notes-area { width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; color: white; margin-bottom: 15px; resize: none; font-size: 12px; outline: none; }
+        .bill-line { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.7; margin-bottom: 5px; }
+        .total-display { display: flex; justify-content: space-between; font-size: 24px; font-weight: 800; margin-top: 10px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .order-btn { width: 100%; margin-top: 15px; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: var(--primary); font-weight: 800; font-size: 15px; cursor: pointer; }
 
-        /* Tabs & Items */
-        .tabs { display: flex; background: var(--light-gray); padding: 5px; border-radius: 12px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; border: none; background: none; padding: 8px; font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer; border-radius: 8px; color: #95a5a6; }
-        .tab-btn.active { background: var(--primary); color: var(--accent); }
-
-        .menu-scroll { flex: 1; overflow-y: auto; }
-        .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f1f1; }
-        .item-title { font-weight: 600; font-size: 14px; display: block; }
-        .item-price { color: var(--accent); font-weight: 700; font-size: 12px; }
-
-        .qty-box { display: flex; align-items: center; background: var(--light-gray); border-radius: 8px; padding: 3px; gap: 8px; }
-        .qty-btn { width: 26px; height: 26px; border: none; background: white; border-radius: 6px; cursor: pointer; font-weight: bold; }
-
-        .footer-bar { background: var(--primary); padding: 20px; margin: 0 -25px -25px -25px; color: white; }
-        .btn-action { background: var(--accent); color: var(--primary); border: none; width: 100%; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 15px; cursor: pointer; }
-        .receipt { background: white; padding: 15px; border: 1px solid #ddd; font-family: 'Courier New', monospace; font-size: 12px; color: #000; margin-top: 10px; }
+        /* --- OVERLAYS --- */
+        .overlay { position: absolute; inset: 0; background: rgba(15,23,42,0.96); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .receipt-card { background: white; border-radius: 25px; width: 100%; padding: 30px; max-height: 80vh; overflow-y: auto; text-align: center; }
+        .receipt-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed var(--border); color: var(--text); }
+        
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div class="phone-container">
-    
-    <div id="page-scan" class="screen">
-        <h2 style="margin-top: 10px;">The Bistro</h2>
-        <p style="color: #7f8c8d; text-align: center; font-size: 13px;">Welcome! Please scan to begin.</p>
-        
-        <div class="qr-wrapper">
-            <div class="scanner-line"></div>
-            <img src="qrcode.png" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">
-        </div>
-        
-        <button class="btn-action" style="margin-top: auto;" onclick="navigate('page-location')">Check In</button>
-    </div>
-
-    <div id="page-location" class="screen hidden">
-        <h2 style="font-size: 20px;">Select Branch</h2>
-        <p style="color: #7f8c8d; font-size: 12px; margin-bottom: 15px;">Where are you dining today?</p>
-
-        <div class="branch-list">
-            <div class="location-card" onclick="selectLoc(this, 'BGC High Street')">
-                <span>🏙️</span><div><strong>BGC High Street</strong><small style="display:block; color:#95a5a6">Taguig City</small></div>
+<div class="phone-frame">
+    <div id="scr-qr" class="screen">
+        <div class="qr-screen">
+            <h1 style="font-weight: 800; font-size: 32px; color: var(--primary);">The Bistro</h1>
+            <p style="color: var(--muted); font-size: 14px; font-weight: 600;">Scan to Begin</p>
+            <div class="qr-viewport">
+                <div class="scan-line"></div>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=Bistro_Project_HCI2" width="180">
+                <p style="margin-top: 20px; font-weight: 800; color: var(--primary);">TABLE #10</p>
             </div>
-            <div class="location-card" onclick="selectLoc(this, 'Greenbelt 5')">
-                <span>🏢</span><div><strong>Greenbelt 5</strong><small style="display:block; color:#95a5a6">Makati City</small></div>
-            </div>
-            <div class="location-card" onclick="selectLoc(this, 'SM North EDSA')">
-                <span>🛍️</span><div><strong>SM North EDSA</strong><small style="display:block; color:#95a5a6">Quezon City</small></div>
-            </div>
-            <div class="location-card" onclick="selectLoc(this, 'IT Park Cebu')">
-                <span>🌴</span><div><strong>IT Park</strong><small style="display:block; color:#95a5a6">Cebu City</small></div>
-            </div>
-        </div>
-
-        <button id="btn-to-menu" class="btn-action" style="opacity: 0.5;" disabled onclick="navigate('page-menu')">Enter Restaurant</button>
-    </div>
-
-    <div id="page-menu" class="screen hidden">
-        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-            <span id="loc-display" style="font-size: 11px; color: var(--accent); font-weight: bold;">BRANCH</span>
-            <span style="font-size: 11px; color: #95a5a6;">Table #08</span>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('app')">Starters</button>
-            <button class="tab-btn" onclick="switchTab('main')">Meals</button>
-            <button class="tab-btn" onclick="switchTab('drink')">Drinks</button>
-        </div>
-
-        <div id="tab-app" class="menu-scroll">
-            <div class="menu-item">
-                <div><span class="item-title">Shanghai (6pcs)</span><span class="item-price">₱99</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Lumpia', 99, -1)">-</button><span id="qty-Lumpia">0</span><button class="qty-btn" onclick="updateQty('Lumpia', 99, 1)">+</button></div>
-            </div>
-            <div class="menu-item">
-                <div><span class="item-title">Cheesy Fries</span><span class="item-price">₱65</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Fries', 65, -1)">-</button><span id="qty-Fries">0</span><button class="qty-btn" onclick="updateQty('Fries', 65, 1)">+</button></div>
-            </div>
-            <div class="menu-item">
-                <div><span class="item-title">Garlic Bread</span><span class="item-price">₱45</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Bread', 45, -1)">-</button><span id="qty-Bread">0</span><button class="qty-btn" onclick="updateQty('Bread', 45, 1)">+</button></div>
-            </div>
-        </div>
-
-        <div id="tab-main" class="menu-scroll hidden">
-            <div class="menu-item">
-                <div><span class="item-title">Burger Steak</span><span class="item-price">₱85</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Steak', 85, -1)">-</button><span id="qty-Steak">0</span><button class="qty-btn" onclick="updateQty('Steak', 85, 1)">+</button></div>
-            </div>
-            <div class="menu-item">
-                <div><span class="item-title">Spaghetti</span><span class="item-price">₱65</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Spag', 65, -1)">-</button><span id="qty-Spag">0</span><button class="qty-btn" onclick="updateQty('Spag', 65, 1)">+</button></div>
-            </div>
-            <div class="menu-item">
-                <div><span class="item-title">Adobo Rice Bowl</span><span class="item-price">₱95</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Adobo', 95, -1)">-</button><span id="qty-Adobo">0</span><button class="qty-btn" onclick="updateQty('Adobo', 95, 1)">+</button></div>
-            </div>
-        </div>
-
-        <div id="tab-drink" class="menu-scroll hidden">
-            <div class="menu-item">
-                <div><span class="item-title">Coke 1.5L</span><span class="item-price">₱75</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Coke', 75, -1)">-</button><span id="qty-Coke">0</span><button class="qty-btn" onclick="updateQty('Coke', 75, 1)">+</button></div>
-            </div>
-            <div class="menu-item">
-                <div><span class="item-title">Iced Tea Glass</span><span class="item-price">₱25</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Tea', 25, -1)">-</button><span id="qty-Tea">0</span><button class="qty-btn" onclick="updateQty('Tea', 25, 1)">+</button></div>
-            </div>
-            <div class="menu-item">
-                <div><span class="item-title">Buko Juice</span><span class="item-price">₱50</span></div>
-                <div class="qty-box"><button class="qty-btn" onclick="updateQty('Buko', 50, -1)">-</button><span id="qty-Buko">0</span><button class="qty-btn" onclick="updateQty('Buko', 50, 1)">+</button></div>
-            </div>
-        </div>
-
-        <div class="footer-bar">
-            <div style="display:flex; justify-content:space-between; margin-bottom: 10px;"><span>Total</span><strong>₱<span id="total-val">0</span></strong></div>
-            <button class="btn-action" onclick="placeOrder()">Send Order</button>
+            <button onclick="changeScreen('scr-puzzle', initPuzzle)" class="order-btn">Scan QR Code</button>
         </div>
     </div>
 
-    <div id="page-receipt" class="screen hidden">
-        <h2 style="text-align: center; margin-top: 20px;">Order Success!</h2>
-        <p style="text-align: center; font-size: 12px; color: #7f8c8d;">Please wait for your server.</p>
-        <div class="receipt" id="receipt-data"></div>
-        <button class="btn-action" style="margin-top: auto;" onclick="location.reload()">Start New Order</button>
+    <div id="scr-puzzle" class="screen hidden">
+        <div class="puzzle-screen">
+            <h3 style="font-weight: 800;">Human Verification</h3>
+            <p style="font-size: 12px; opacity: 0.6; margin-bottom: 25px;">Slide to fit the puzzle</p>
+            <div class="puzzle-box" id="p-box">
+                <div class="puzzle-slot" id="p-slot"></div>
+                <div class="puzzle-piece" id="p-piece"></div>
+            </div>
+            <div class="slider-track">
+                <div class="slider-btn" id="knob">→</div>
+            </div>
+        </div>
     </div>
 
-</div>
+    <div id="scr-menu" class="screen hidden">
+        <header>
+            <p class="loc-tag">Rockwell Branch</p>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <h2 class="tab-tag">Table #10</h2>
+                <span style="color: var(--success); font-size: 9px; font-weight: 800;">● SESSION ACTIVE</span>
+            </div>
+            <div class="dd-wrapper">
+                <div class="dd-trigger" onclick="toggleDropdown()">
+                    <span id="current-cat">Starters & Appetizers</span> <span>▼</span>
+                </div>
+                <div class="dd-menu" id="category-menu">
+                    <div class="dd-item" onclick="switchCategory('starters', 'Starters & Appetizers')">Starters & Appetizers</div>
+                    <div class="dd-item" onclick="switchCategory('mains', 'Main Courses')">Main Courses</div>
+                    <div class="dd-item" onclick="switchCategory('desserts', 'Desserts')">Desserts</div>
+                    <div class="dd-item" onclick="switchCategory('drinks', 'Cold Beverages')">Cold Beverages</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="menu-flow" id="menu-items-container"></div>
+
+        <footer>
+            <textarea id="notes" class="notes-area" placeholder="Special instructions (Allergies, etc.)"></textarea>
+            <div class="bill-line"><span>Subtotal</span><span id="sub-val">₱0</span></div>
+            <div class="bill-line"><span>Service Charge (10%)</span><span id="sc-val">₱0</span></div>
+            <div class="total-display"><span>Total Bill</span><span style="color: var(--accent);" id="total-val">₱0</span></div>
+            <button class="order-btn" onclick="placeOrder()">PLACE ORDER NOW</button>
+        </footer>
+    </div>
+
+    <div id="scr-loading" class="overlay hidden">
+        <div style="text-align: center; color: white;">
+            <div class="loader" style="margin: 0 auto 15px;"></div>
+            <p style="font-weight: 600; letter-spacing: 1px;">SENDING TO KITCHEN...</p>
+        </div>
+    </div>
+
+    <div id="scr-receipt" class="overlay hidden">
+        <div class="receipt-card">
+            <div style="background: #ecfdf5; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                <span style="color: var(--success); font-size: 24px;">✓</span>
+            </div>
+            <h3 style="font-weight: 800;">Order Confirmed</h3>
+            <p id="receipt-id-display" style="color: var(--muted); font-size: 11px; margin-bottom: 10px;">Receipt #BSTR-XXXX</p>
+            
+            <div id="receipt-instructions-display" style="font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 15px; padding: 10px; background: var(--bg); border-radius: 8px; display: none;"></div>
+
+            <div id="receipt-items"></div>
+            <div style="margin-top: 20px; border-top: 2px solid var(--bg); padding-top: 15px;">
+                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 18px;">
+                    <span>Total Bill</span>
+                    <span style="color: var(--accent);" id="final-total">₱0</span>
+                </div>
+            </div>
+
+            <button class="order-btn" style="background: var(--primary); color: white; margin-top: 20px;" onclick="addMoreOrder()">ADD MORE TO ORDER</button>
+            <button class="order-btn" style="background: transparent; color: var(--muted); border: 1px solid var(--border); margin-top: 10px;" onclick="finishOrdering()">FINISH & EXIT</button>
+        </div>
+    </div>
+
+    <div id="scr-thanks" class="overlay hidden">
+        <div class="receipt-card" style="text-align: center;">
+            <div style="font-size: 60px; margin-bottom: 20px;">😊</div>
+            <h2 style="font-weight: 800; color: var(--primary);">Thank You!</h2>
+            <p style="color: var(--muted); margin-bottom: 30px;">Your food is being prepared with care. Our staff will be with you shortly.</p>
+            <button class="order-btn" onclick="location.reload()">BACK TO START</button>
+        </div>
+    </div>
 
 <script>
+    const menuData = {
+        starters: [
+           { id: 'qty1', name: 'Shanghai Rolls (8pc)', price: 165, img: 'shanghai.jfif' },
+            { id: 'qty2', name: 'Truffle Fries', price: 195, img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80' },
+            { id: 'qty3', name: 'Crispy Calamari', price: 245, img: 'calamari.jfif' },
+            { id: 'qty_new1', name: 'Buffalo Wings', price: 280, img: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400&q=80' }
+        ],
+        mains: [
+            { id: 'qty4', name: 'Ribeye Steak', price: 950, img: 'ribeye.jfif' },
+            { id: 'qty5', name: 'Seafood Pasta', price: 380, img: 'seafood-pasta.jfif' },
+            { id: 'qty_new2', name: 'Grilled Salmon', price: 450, img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80' },
+            { id: 'qty_new3', name: 'Classic Burger', price: 320, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80' }
+        ],
+        desserts: [
+            { id: 'qty6', name: 'Chocolate Lava Cake', price: 180, img: 'lava-cake.jfif' },
+            { id: 'qty_new4', name: 'Mango Cheesecake', price: 210, img: 'mango-cheesecake.jfif' }
+        ],
+        drinks: [
+            { id: 'qty7', name: 'Iced Coffee Latte', price: 135, img: 'https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=400&q=80' },
+            { id: 'qty8', name: 'Signature Iced Tea', price: 85, img: 'tea.jfif' }
+        ]
+    };
+
     let cart = {};
-    let prices = { Lumpia: 99, Fries: 65, Bread: 45, Steak: 85, Spag: 65, Adobo: 95, Coke: 75, Tea: 25, Buko: 50 };
-    let names = { Lumpia: "Shanghai", Fries: "Cheesy Fries", Bread: "Garlic Bread", Steak: "Burger Steak", Spag: "Spaghetti", Adobo: "Adobo Bowl", Coke: "Coke 1.5L", Tea: "Iced Tea", Buko: "Buko Juice" };
-    let selectedBranch = "";
+    let subtotal = 0;
+    let targetX = 0;
 
-    function navigate(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    function changeScreen(id, cb) {
+        document.querySelectorAll('.screen, .overlay').forEach(s => s.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
+        if(cb) cb();
     }
 
-    function selectLoc(el, name) {
-        document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-        selectedBranch = name;
-        document.getElementById('loc-display').innerText = name.toUpperCase();
-        document.getElementById('btn-to-menu').disabled = false;
-        document.getElementById('btn-to-menu').style.opacity = "1";
+    function toggleDropdown() { document.getElementById('category-menu').classList.toggle('active'); }
+
+    function switchCategory(catKey, label) {
+        document.getElementById('current-cat').innerText = label;
+        document.getElementById('category-menu').classList.remove('active');
+        const container = document.getElementById('menu-items-container');
+        container.innerHTML = menuData[catKey].map(item => `
+            <div class="item-card">
+                <img class="item-img" src="${item.img}" alt="${item.name}">
+                <div class="item-details">
+                    <span class="item-name">${item.name}</span>
+                    <span class="item-price">₱${item.price.toLocaleString()}</span>
+                </div>
+                <div class="qty-ctrl">
+                    <button class="q-btn" onclick="updateQty('${item.id}', ${item.price}, -1, '${item.name}')">-</button>
+                    <span id="${item.id}" style="font-weight:800; font-size:12px;">${cart[item.id] ? cart[item.id].qty : 0}</span>
+                    <button class="q-btn" onclick="updateQty('${item.id}', ${item.price}, 1, '${item.name}')">+</button>
+                </div>
+            </div>
+        `).join('');
     }
 
-    function switchTab(tab) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        document.querySelectorAll('.menu-scroll').forEach(s => s.classList.add('hidden'));
-        document.getElementById('tab-' + tab).classList.remove('hidden');
-    }
-
-    function updateQty(id, price, delta) {
-        if(!cart[id]) cart[id] = 0;
-        cart[id] += delta;
-        if(cart[id] < 0) cart[id] = 0;
-        document.getElementById('qty-' + id).innerText = cart[id];
-        let total = 0;
-        for(let k in cart) total += cart[k] * prices[k];
-        document.getElementById('total-val').innerText = total;
-    }
-
-    function placeOrder() {
-        let total = 0;
-        for(let k in cart) total += cart[k] * prices[k];
-        if(total === 0) return alert("Please select items first!");
-
-        let html = `<center><strong>THE BISTRO</strong><br>${selectedBranch}</center><hr style="border-top:1px dashed #000">`;
-        for(let k in cart) {
-            if(cart[k] > 0) html += `<div style="display:flex; justify-content:space-between"><span>${cart[k]}x ${names[k]}</span><span>₱${cart[k]*prices[k]}</span></div>`;
-        }
-        html += `<hr style="border-top:1px dashed #000"><div style="display:flex; justify-content:space-between; font-weight:bold"><span>TOTAL</span><span>₱${total}</span></div>`;
-        html += `<br><center>TABLE #08<br>${new Date().toLocaleTimeString()}</center>`;
+    function updateQty(id, price, delta, name) {
+        if (!cart[id]) cart[id] = { qty: 0, price: price, name: name };
+        if (cart[id].qty + delta < 0) return;
         
-        document.getElementById('receipt-data').innerHTML = html;
-        navigate('page-receipt');
+        cart[id].qty += delta;
+        subtotal += (price * delta);
+        
+        document.getElementById(id).innerText = cart[id].qty;
+        document.getElementById('sub-val').innerText = `₱${subtotal.toLocaleString()}`;
+        
+        let sc = subtotal * 0.1;
+        document.getElementById('sc-val').innerText = `₱${sc.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        document.getElementById('total-val').innerText = `₱${(subtotal + sc).toLocaleString()}`;
     }
-</script>
 
+    function initPuzzle() {
+        targetX = 130 + Math.random() * 80;
+        const bg = 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400';
+        const pBox = document.getElementById('p-box');
+        const pPiece = document.getElementById('p-piece');
+        
+        pBox.style.backgroundImage = `url('${bg}')`;
+        pPiece.style.backgroundImage = `url('${bg}')`;
+        pPiece.style.backgroundPosition = `-${targetX}px -60px`;
+        pPiece.style.left = "0px";
+        document.getElementById('p-slot').style.left = targetX + "px";
+        // Default category to show when menu loads
+        switchCategory('starters', 'Starters & Appetizers');
+    }
+
+   function placeOrder() {
+        if (subtotal === 0) return alert("Your cart is empty.");
+        
+        // Capture instructions before showing loading
+        const instructions = document.getElementById('notes').value;
+        const instrDisplay = document.getElementById('receipt-instructions-display');
+        
+        document.getElementById('scr-loading').classList.remove('hidden');
+        
+        setTimeout(() => {
+            document.getElementById('scr-loading').classList.add('hidden');
+            const randomID = Math.floor(Math.random() * 9000) + 1000;
+            document.getElementById('receipt-id-display').innerText = `Receipt #BSTR-${randomID}`;
+            
+            // Show instructions on receipt if they exist
+            if (instructions.trim() !== "") {
+                instrDisplay.innerText = `Note: "${instructions}"`;
+                instrDisplay.style.display = "block";
+            } else {
+                instrDisplay.style.display = "none";
+            }
+
+            const serviceCharge = subtotal * 0.10;
+            const finalTotal = subtotal + serviceCharge;
+            const vatableSales = subtotal / 1.12;
+            const vatAmount = subtotal - vatableSales;
+
+            let list = document.getElementById('receipt-items');
+            list.innerHTML = '';
+            
+            for (let key in cart) {
+                if (cart[key].qty > 0) {
+                    list.innerHTML += `
+                        <div class="receipt-item">
+                            <span>${cart[key].qty}x ${cart[key].name}</span>
+                            <span>₱${(cart[key].qty * cart[key].price).toLocaleString()}</span>
+                        </div>`;
+                }
+            }
+
+            list.innerHTML += `
+                <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #e2e8f0;">
+                    <div class="receipt-item" style="opacity: 0.7; font-size: 11px;">
+                        <span>VATable Sales</span><span>₱${vatableSales.toFixed(2)}</span>
+                    </div>
+                    <div class="receipt-item" style="opacity: 0.7; font-size: 11px;">
+                        <span>12% VAT</span><span>₱${vatAmount.toFixed(2)}</span>
+                    </div>
+                    <div class="receipt-item" style="opacity: 0.7; font-size: 11px;">
+                        <span>Service Charge (10%)</span><span>₱${serviceCharge.toFixed(2)}</span>
+                    </div>
+                </div>`;
+            
+            document.getElementById('final-total').innerText = `₱${finalTotal.toLocaleString()}`;
+            changeScreen('scr-receipt');
+        }, 2000);
+    }
+
+    // NEW: Function to go back to Menu directly
+    function addMoreOrder() {
+        // Reset the cart data and bill display
+        cart = {};
+        subtotal = 0;
+        document.getElementById('sub-val').innerText = "₱0";
+        document.getElementById('sc-val').innerText = "₱0";
+        document.getElementById('total-val').innerText = "₱0";
+        document.getElementById('notes').value = "";
+        
+        // Return to menu screen
+        changeScreen('scr-menu');
+        
+        // Refresh the visible quantities on the cards
+        switchCategory('starters', 'Starters & Appetizers');
+    }
+
+    // NEW: Function to show Thank You screen
+    function finishOrdering() {
+        changeScreen('scr-thanks');
+    }
+    const knob = document.getElementById('knob'), piece = document.getElementById('p-piece');
+    let isDragging = false;
+    
+    const startDrag = () => isDragging = true;
+    const endDrag = () => {
+        if(!isDragging) return;
+        isDragging = false;
+        if(Math.abs(parseFloat(piece.style.left) - targetX) < 10) changeScreen('scr-menu');
+        else { initPuzzle(); knob.style.left = "0px"; }
+    };
+    const moveDrag = (e) => {
+        if(!isDragging) return;
+        const rect = knob.parentElement.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const x = clientX - rect.left - 35;
+        const cx = Math.max(0, Math.min(x, 230));
+        knob.style.left = cx + "px"; 
+        piece.style.left = cx + "px";
+    };
+
+    knob.onmousedown = knob.ontouchstart = startDrag;
+    window.onmouseup = window.ontouchend = endDrag;
+    window.onmousemove = window.ontouchmove = moveDrag;
+</script>
 </body>
 </html>
