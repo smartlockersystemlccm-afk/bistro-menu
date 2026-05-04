@@ -25,21 +25,33 @@
         .hidden { display: none !important; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        /* --- SCREEN 1: QR --- */
-        .qr-screen { padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: center; height: 100%; }
-        .qr-viewport {
-            background: white; padding: 30px; border-radius: 40px; margin: 30px auto; 
-            border: 1px solid var(--border); position: relative; width: fit-content;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05); overflow: hidden;
+        /* --- SCREEN: WELCOME --- */
+        .welcome-screen {
+            height: 100%; display: flex; flex-direction: column; justify-content: space-between;
+            padding: 60px 40px; text-align: center; background: linear-gradient(to bottom, #ffffff, #f1f5f9);
         }
-        .scan-line { 
-            position: absolute; left: 0; width: 100%; height: 3px; 
-            background: var(--accent); box-shadow: 0 0 15px var(--accent);
-            z-index: 10; animation: scanning 2.5s infinite ease-in-out;
+        .welcome-logo { font-size: 42px; font-weight: 800; color: var(--primary); letter-spacing: -1px; margin-top: 40px; }
+        .welcome-logo span { color: var(--accent); }
+        .welcome-tagline { color: var(--muted); font-size: 16px; font-weight: 500; margin-top: 10px; }
+        
+        /* TABLE BADGE STYLING */
+        .table-badge-large {
+            display: inline-block; background: #fefce8; border: 2px solid var(--accent);
+            padding: 15px 30px; border-radius: 20px; color: var(--primary);
+            font-size: 28px; font-weight: 800; margin: 20px 0;
+            box-shadow: 0 10px 20px rgba(197, 160, 89, 0.15);
         }
-        @keyframes scanning { 0% { top: 5%; } 50% { top: 95%; } 100% { top: 5%; } }
 
-        /* --- SCREEN 2: JIGSAW CAPTCHA --- */
+        .welcome-footer { margin-bottom: 20px; }
+        .proceed-btn {
+            width: 100%; padding: 20px; border-radius: 18px; border: none;
+            background: var(--primary); color: white; font-weight: 700; font-size: 16px;
+            letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.2);
+        }
+        .proceed-btn:active { transform: scale(0.96); }
+
+        /* --- SCREEN: JIGSAW CAPTCHA --- */
         .puzzle-screen { background: var(--primary); height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; color: white; text-align: center; }
         .puzzle-box { width: 300px; height: 170px; border-radius: 12px; position: relative; overflow: hidden; background-size: cover; border: 2px solid #334155; }
         .puzzle-slot { position: absolute; width: 60px; height: 60px; background: rgba(0,0,0,0.75); border-radius: 10px; border: 2px dashed rgba(255,255,255,0.4); }
@@ -47,10 +59,10 @@
         .slider-track { width: 300px; height: 48px; background: #1e293b; border-radius: 24px; margin-top: 35px; position: relative; border: 1px solid #334155; }
         .slider-btn { position: absolute; left: 0; width: 70px; height: 48px; background: var(--accent); border-radius: 24px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary); cursor: pointer; }
 
-        /* --- SCREEN 3: MENU --- */
+        /* --- SCREEN: MENU --- */
         header { background: white; padding: 20px 25px; border-bottom: 1px solid var(--border); z-index: 100; position: relative; }
         .loc-tag { font-size: 10px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .tab-tag { font-weight: 800; font-size: 22px; color: var(--primary); }
+        .tab-tag-main { font-weight: 800; font-size: 26px; color: var(--accent); }
 
         .dd-wrapper { position: relative; margin-top: 15px; }
         .dd-trigger {
@@ -90,11 +102,9 @@
         .total-display { display: flex; justify-content: space-between; font-size: 24px; font-weight: 800; margin-top: 10px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
         .order-btn { width: 100%; margin-top: 15px; padding: 18px; border-radius: 15px; border: none; background: var(--accent); color: var(--primary); font-weight: 800; font-size: 15px; cursor: pointer; }
 
-        /* --- OVERLAYS --- */
         .overlay { position: absolute; inset: 0; background: rgba(15,23,42,0.96); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .receipt-card { background: white; border-radius: 25px; width: 100%; padding: 30px; max-height: 80vh; overflow-y: auto; text-align: center; }
         .receipt-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed var(--border); color: var(--text); }
-        
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -102,23 +112,27 @@
 <body>
 
 <div class="phone-frame">
-    <div id="scr-qr" class="screen">
-        <div class="qr-screen">
-            <h1 style="font-weight: 800; font-size: 32px; color: var(--primary);">The Bistro</h1>
-            <p style="color: var(--muted); font-size: 14px; font-weight: 600;">Scan to Begin</p>
-            <div class="qr-viewport">
-                <div class="scan-line"></div>
-                <img src="qrcode.png" width="180">
-                <p style="margin-top: 20px; font-weight: 800; color: var(--primary);">TABLE #10</p>
+    <div id="scr-welcome" class="screen">
+        <div class="welcome-screen">
+            <div>
+                <h1 class="welcome-logo">The <span>Bistro</span></h1>
+                <p class="welcome-tagline">Elite Dining Experience</p>
+                <div class="table-badge-large">TABLE #10</div>
             </div>
-            <button onclick="changeScreen('scr-puzzle', initPuzzle)" class="order-btn">Scan QR Code</button>
+            
+            <div style="font-size: 50px; margin-bottom: 40px;">🍽️</div>
+
+            <div class="welcome-footer">
+                <button class="proceed-btn" onclick="changeScreen('scr-puzzle', initPuzzle)">PROCEED TO MENU</button>
+                <p style="color: var(--muted); font-size: 11px; margin-top: 15px; font-weight: 600; letter-spacing: 1px;">ROCKWELL BRANCH</p>
+            </div>
         </div>
     </div>
 
     <div id="scr-puzzle" class="screen hidden">
         <div class="puzzle-screen">
-            <h3 style="font-weight: 800;">Human Verification</h3>
-            <p style="font-size: 12px; opacity: 0.6; margin-bottom: 25px;">Slide to fit the puzzle</p>
+            <h3 style="font-weight: 800;">Security Check</h3>
+            <p style="font-size: 12px; opacity: 0.6; margin-bottom: 25px;">Slide the piece to unlock the menu</p>
             <div class="puzzle-box" id="p-box">
                 <div class="puzzle-slot" id="p-slot"></div>
                 <div class="puzzle-piece" id="p-piece"></div>
@@ -133,7 +147,7 @@
         <header>
             <p class="loc-tag">Rockwell Branch</p>
             <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                <h2 class="tab-tag">Table #10</h2>
+                <h2 class="tab-tag-main">Table #10</h2>
                 <span style="color: var(--success); font-size: 9px; font-weight: 800;">● SESSION ACTIVE</span>
             </div>
             <div class="dd-wrapper">
@@ -174,9 +188,7 @@
             </div>
             <h3 style="font-weight: 800;">Order Confirmed</h3>
             <p id="receipt-id-display" style="color: var(--muted); font-size: 11px; margin-bottom: 10px;">Receipt #BSTR-XXXX</p>
-            
             <div id="receipt-instructions-display" style="font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 15px; padding: 10px; background: var(--bg); border-radius: 8px; display: none;"></div>
-
             <div id="receipt-items"></div>
             <div style="margin-top: 20px; border-top: 2px solid var(--bg); padding-top: 15px;">
                 <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 18px;">
@@ -184,7 +196,6 @@
                     <span style="color: var(--accent);" id="final-total">₱0</span>
                 </div>
             </div>
-
             <button class="order-btn" style="background: var(--primary); color: white; margin-top: 20px;" onclick="addMoreOrder()">ADD MORE TO ORDER</button>
             <button class="order-btn" style="background: transparent; color: var(--muted); border: 1px solid var(--border); margin-top: 10px;" onclick="finishOrdering()">FINISH & EXIT</button>
         </div>
@@ -198,18 +209,19 @@
             <button class="order-btn" onclick="location.reload()">BACK TO START</button>
         </div>
     </div>
+</div>
 
 <script>
     const menuData = {
         starters: [
-           { id: 'qty1', name: 'Shanghai Rolls (8pc)', price: 165, img: 'shanghai.jfif' },
+            { id: 'qty1', name: 'Shanghai Rolls (8pc)', price: 165, img: 'shanghai.jfif' },
             { id: 'qty2', name: 'Truffle Fries', price: 195, img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80' },
             { id: 'qty3', name: 'Crispy Calamari', price: 245, img: 'calamari.jfif' },
             { id: 'qty_new1', name: 'Buffalo Wings', price: 280, img: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400&q=80' }
         ],
         mains: [
             { id: 'qty4', name: 'Ribeye Steak', price: 950, img: 'ribeye.jfif' },
-            { id: 'qty5', name: 'Seafood Pasta', price: 380, img: 'https://smartlockersystemlcm-afk.github.io/bistro-menu/seafood-pasta.jfif' },
+            { id: 'qty5', name: 'Seafood Pasta', price: 380, img: 'seafood-pasta.jfif' },
             { id: 'qty_new2', name: 'Grilled Salmon', price: 450, img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80' },
             { id: 'qty_new3', name: 'Classic Burger', price: 320, img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80' }
         ],
@@ -258,13 +270,10 @@
     function updateQty(id, price, delta, name) {
         if (!cart[id]) cart[id] = { qty: 0, price: price, name: name };
         if (cart[id].qty + delta < 0) return;
-        
         cart[id].qty += delta;
         subtotal += (price * delta);
-        
         document.getElementById(id).innerText = cart[id].qty;
         document.getElementById('sub-val').innerText = `₱${subtotal.toLocaleString()}`;
-        
         let sc = subtotal * 0.1;
         document.getElementById('sc-val').innerText = `₱${sc.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
         document.getElementById('total-val').innerText = `₱${(subtotal + sc).toLocaleString()}`;
@@ -275,46 +284,33 @@
         const bg = 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400';
         const pBox = document.getElementById('p-box');
         const pPiece = document.getElementById('p-piece');
-        
         pBox.style.backgroundImage = `url('${bg}')`;
         pPiece.style.backgroundImage = `url('${bg}')`;
         pPiece.style.backgroundPosition = `-${targetX}px -60px`;
         pPiece.style.left = "0px";
         document.getElementById('p-slot').style.left = targetX + "px";
-        // Default category to show when menu loads
         switchCategory('starters', 'Starters & Appetizers');
     }
 
-   function placeOrder() {
+    function placeOrder() {
         if (subtotal === 0) return alert("Your cart is empty.");
-        
-        // Capture instructions before showing loading
         const instructions = document.getElementById('notes').value;
         const instrDisplay = document.getElementById('receipt-instructions-display');
-        
         document.getElementById('scr-loading').classList.remove('hidden');
-        
         setTimeout(() => {
             document.getElementById('scr-loading').classList.add('hidden');
             const randomID = Math.floor(Math.random() * 9000) + 1000;
             document.getElementById('receipt-id-display').innerText = `Receipt #BSTR-${randomID}`;
-            
-            // Show instructions on receipt if they exist
             if (instructions.trim() !== "") {
                 instrDisplay.innerText = `Note: "${instructions}"`;
                 instrDisplay.style.display = "block";
-            } else {
-                instrDisplay.style.display = "none";
-            }
-
+            } else { instrDisplay.style.display = "none"; }
             const serviceCharge = subtotal * 0.10;
             const finalTotal = subtotal + serviceCharge;
             const vatableSales = subtotal / 1.12;
             const vatAmount = subtotal - vatableSales;
-
             let list = document.getElementById('receipt-items');
             list.innerHTML = '';
-            
             for (let key in cart) {
                 if (cart[key].qty > 0) {
                     list.innerHTML += `
@@ -324,49 +320,30 @@
                         </div>`;
                 }
             }
-
-            list.innerHTML += `
-                <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #e2e8f0;">
-                    <div class="receipt-item" style="opacity: 0.7; font-size: 11px;">
-                        <span>VATable Sales</span><span>₱${vatableSales.toFixed(2)}</span>
-                    </div>
-                    <div class="receipt-item" style="opacity: 0.7; font-size: 11px;">
-                        <span>12% VAT</span><span>₱${vatAmount.toFixed(2)}</span>
-                    </div>
-                    <div class="receipt-item" style="opacity: 0.7; font-size: 11px;">
-                        <span>Service Charge (10%)</span><span>₱${serviceCharge.toFixed(2)}</span>
-                    </div>
-                </div>`;
-            
+            list.innerHTML += `<div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #e2e8f0;">
+                <div class="receipt-item" style="opacity: 0.7; font-size: 11px;"><span>VATable Sales</span><span>₱${vatableSales.toFixed(2)}</span></div>
+                <div class="receipt-item" style="opacity: 0.7; font-size: 11px;"><span>12% VAT</span><span>₱${vatAmount.toFixed(2)}</span></div>
+                <div class="receipt-item" style="opacity: 0.7; font-size: 11px;"><span>Service Charge (10%)</span><span>₱${serviceCharge.toFixed(2)}</span></div>
+            </div>`;
             document.getElementById('final-total').innerText = `₱${finalTotal.toLocaleString()}`;
             changeScreen('scr-receipt');
         }, 2000);
     }
 
-    // NEW: Function to go back to Menu directly
     function addMoreOrder() {
-        // Reset the cart data and bill display
-        cart = {};
-        subtotal = 0;
+        cart = {}; subtotal = 0;
         document.getElementById('sub-val').innerText = "₱0";
         document.getElementById('sc-val').innerText = "₱0";
         document.getElementById('total-val').innerText = "₱0";
         document.getElementById('notes').value = "";
-        
-        // Return to menu screen
         changeScreen('scr-menu');
-        
-        // Refresh the visible quantities on the cards
         switchCategory('starters', 'Starters & Appetizers');
     }
 
-    // NEW: Function to show Thank You screen
-    function finishOrdering() {
-        changeScreen('scr-thanks');
-    }
+    function finishOrdering() { changeScreen('scr-thanks'); }
+
     const knob = document.getElementById('knob'), piece = document.getElementById('p-piece');
     let isDragging = false;
-    
     const startDrag = () => isDragging = true;
     const endDrag = () => {
         if(!isDragging) return;
@@ -383,7 +360,6 @@
         knob.style.left = cx + "px"; 
         piece.style.left = cx + "px";
     };
-
     knob.onmousedown = knob.ontouchstart = startDrag;
     window.onmouseup = window.ontouchend = endDrag;
     window.onmousemove = window.ontouchmove = moveDrag;
